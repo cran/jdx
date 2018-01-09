@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+<title>Introduction to jdx: Java Data Exchange for R and rJava</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to jdx: Java Data Exchange for R and rJava</h1>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#java-data-exchange-for-r">Java Data Exchange for R</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#primary-functions">Primary Functions</a></li>
+<li><a href="#converting-r-objects-to-java-objects">Converting R Objects to Java Objects</a><ul>
+<li><a href="#r_vectors_of_length_one">R Vectors of Length One</a></li>
+<li><a href="#r-vectors-one-dimensional-arrays-and-one-dimensional-tables">R Vectors, One-dimensional Arrays, and One-dimensional Tables</a></li>
+<li><a href="#r_factors">R Factors</a></li>
+<li><a href="#r_n_dimensional_arrays">R Matrices and N-dimensional Arrays</a></li>
+<li><a href="#r_data_frames">R Data Frames</a></li>
+<li><a href="#r-lists-and-environments">R Lists and Environments</a></li>
+</ul></li>
+<li><a href="#converting-java-objects-to-r-objects">Converting Java Objects to R Objects</a><ul>
+<li><a href="#java-scalars">Java Scalars</a></li>
+<li><a href="#java_arrays">Java One-dimensional Arrays and N-dimensional Rectangular Arrays</a></li>
+<li><a href="#java-ragged-arrays">Java Ragged Arrays</a></li>
+<li><a href="#java_maps">Java Maps</a></li>
+<li><a href="#java_collections">Java Collections</a></li>
+</ul></li>
+<li><a href="#conversion_issues">Conversion Issues</a><ul>
+<li><a href="#unnamed-r-lists">Unnamed R Lists</a></li>
+<li><a href="#named-r-lists">Named R Lists</a></li>
+<li><a href="#r-data-frames">R Data Frames</a></li>
+</ul></li>
+<li><a href="#R_raw_Java_byte">R raw Values and Java byte Values</a></li>
+</ul>
+</div>
+
+<div id="java-data-exchange-for-r" class="section level2">
+<h2>Java Data Exchange for R</h2>
+<!-- The [jdx](https://cran.r-project.org/package=jdx) package builds on Simon Urbanek's [rJava](https://cran.r-project.org/package=rJava) package to simplify and extend data exchange between R and Java. The jdx package was originally developed to provide data exchange functionality for the [jsr223](https://cran.r-project.org/package=jsr223) package, a high-level scripting interface for the Java platform. We provide jdx to developers who may want to extend existing rJava solutions. Developers of new applications are encouraged to use jsr223 for rapid application development with a relatively low learning curve. -->
+<p>The <a href="https://cran.r-project.org/package=jdx">jdx</a> package builds on Simon Urbanek’s <a href="https://cran.r-project.org/package=rJava">rJava</a> package to simplify and extend data exchange between R and Java. The jdx package was originally developed to provide data exchange functionality for the jsr223 package, a high-level scripting interface for the Java platform. We provide jdx to developers who may want to extend existing rJava solutions. Developers of new applications are encouraged to use jsr223 for rapid application development with a relatively low learning curve.</p>
+<p>The jdx package converts R data structures to generic Java objects and vice versa. In particular, R vectors, n-dimensional arrays, factors, data frames, tables, environments, and lists are converted to Java objects. Java scalars and n-dimensional arrays are converted to R vectors and n-dimensional arrays. Java maps and collections are converted to R lists, data frames, vectors, or n-dimensional arrays depending on content. Several options are available for data conversion including various ordering schemes for arrays and data frames.</p>
+<p>For those familar with the technical details of rJava, here are two important notes to consider. First, the jdx package behavior diverges from rJava for <code>raw</code> values and Java types <code>byte</code> and <code>java.lang.Byte</code>. Please see <a href="#R_raw_Java_byte">R raw Values and Java byte Values</a> for more information. Second, jdx does not use or load rJava’s companion package JRI (the Java/R Interface).</p>
+</div>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<p>The jdx package requires Java 8 Standard Edition or above. The current version of the Java Runtime Environment (JRE) can be determined by executing <code>java -version</code> from a system command prompt. Java 8 is denoted by version 1.8.x_xx. The JRE can be obtained from <a href="http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html">Oracle’s web site</a>. Select the architecture (32 or 64 bit) that matches your R installation.</p>
+<p>The jdx package runs on a standard installation of R (e.g., the R build option <code>--enable-R-shlib</code> is not required). Install jdx with the usual command: <code>install.packages(&quot;jdx&quot;)</code>.</p>
+</div>
+<div id="primary-functions" class="section level2">
+<h2>Primary Functions</h2>
+<p>This section demonstrates the three primary functions in jdx: <code>convertToJava()</code>, <code>convertToR()</code>, and <code>getJavaClassName()</code>. In our example, we use a simple 2 x 3 matrix:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m1 &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span>:<span class="dv">6</span>, <span class="dv">2</span>, <span class="dv">3</span>)
+m1</code></pre></div>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    1    3    5
+## [2,]    2    4    6</code></pre>
+<p>Next, we load the jdx library and use <code>convertToJava()</code> to convert the R matrix to a two-dimensional Java array. The return value of the function is an rJava reference object that points to the new Java object. The <code>getJavaClassName()</code> function returns the class name of the Java object. In this case, the class name is <code>[[I</code>, Java’s shorthand for a two-dimensional integer array.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;jdx&quot;</span>)
+o &lt;-<span class="st"> </span><span class="kw">convertToJava</span>(m1)
+<span class="kw">getJavaClassName</span>(o)</code></pre></div>
+<pre><code>## [1] &quot;[[I&quot;</code></pre>
+<p>The object reference can be used as a parameter for any rJava method. Here, we use <code>rJava::.jcall()</code> to invoke the static method <code>java.util.Arrays.deepToString()</code>. This method returns a string representation for multi-dimensional arrays. Its first parameter expects a one-dimensional array of <code>java.lang.Object</code>, so we cast our reference before calling <code>deepToString()</code>. The output reveals that <code>convertToJava()</code> uses row-major ordering by default when converting arrays. Other ordering options are available.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">o &lt;-<span class="st"> </span>rJava::<span class="kw">.jcast</span>(o, <span class="st">&quot;[Ljava/lang/Object;&quot;</span>)
+rJava::<span class="kw">.jcall</span>(<span class="st">&quot;java/util/Arrays&quot;</span>, <span class="st">&quot;S&quot;</span>, <span class="st">&quot;deepToString&quot;</span>, o)</code></pre></div>
+<pre><code>## [1] &quot;[[1, 3, 5], [2, 4, 6]]&quot;</code></pre>
+<p>Finally, we convert the Java array back to an R matrix using <code>convertToR()</code>. The last line shows that the result is identical to the original R matrix.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m2 &lt;-<span class="st"> </span><span class="kw">convertToR</span>(o)
+<span class="kw">identical</span>(m1, m2)</code></pre></div>
+<pre><code>## [1] TRUE</code></pre>
+</div>
+<div id="converting-r-objects-to-java-objects" class="section level2">
+<h2>Converting R Objects to Java Objects</h2>
+<p>The jdx package provides a single function, <code>convertToJava()</code>, to handle conversion for all R objects. This design facilitates dynamically-typed programming. Consider, for example, an overloaded Java method <code>setValue()</code> that has different method signatures for a wide variety of data types and structures. If we use <code>rJava::.jcall(object, &quot;V&quot;, &quot;setValue&quot;, convertToJava(value))</code> to call <code>setValue()</code>, the Java method with the correct signature is automatically selected based on the return value of <code>convertToJava()</code>.</p>
+<p>The <code>convertToJava()</code> function provides several data conversion parameters:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">convertToJava</span>(
+  value,
+  <span class="dt">length.one.vector.as.array =</span> <span class="ot">FALSE</span>,
+  <span class="dt">scalars.as.objects =</span> <span class="ot">FALSE</span>,
+  <span class="dt">array.order =</span> <span class="st">&quot;row-major&quot;</span>,
+  <span class="dt">data.frame.row.major =</span> <span class="ot">TRUE</span>,
+  <span class="dt">coerce.factors =</span> <span class="ot">TRUE</span>
+)</code></pre></div>
+<p>The parameters <code>length.one.vector.as.array</code> and <code>scalars.as.objects</code> control if and how length one vectors are converted to Java scalars. The parameter <code>array.order</code> affects the data ordering of n-dimensional arrays. The parameter <code>data.frame.row.major</code> specifies whether data frames are converted using row-major or column-major order. Finally, <code>coerce.factors</code> determines whether an attempt should be made to coerce the character vector backing factors to <code>double</code>, <code>int</code>, or <code>boolean</code> Java arrays. The following sections cover each of these topics in detail as well as data conversion rules and behaviors.</p>
+<p><strong>NOTE:</strong> The <code>convertToJava()</code> function preserves only column names when copying R data frames to Java objects: not row names. Neither column nor row names are preserved when copying n-dimensional arrays to Java objects.</p>
+<p><strong>NOTE:</strong> The <code>convertToR()</code> function is not thread-safe. Do not simultaneously call <code>convertToR()</code> from different threads in the same process. A thread-safe alternative is presented in the R documentation for <code>convertToRlowLevel()</code>.</p>
+<div id="r_vectors_of_length_one" class="section level3">
+<h3>R Vectors of Length One</h3>
+<p>The parameters <code>length.one.vector.as.array</code> and <code>scalars.as.objects</code> control how R vectors of length one are converted to Java objects. If <code>length.one.vector.as.array = TRUE</code>, length-one vectors are converted to Java arrays. This is equivalent to passing an R vector to <code>rJava::.jarray()</code>. The “As Is” R function, <code>base::I()</code>, can also be used to indicate that a length-one vector should be converted to a Java array. For example, <code>convertToJava(I(1))</code> produces a Java array even though the default value for <code>length.one.vector.as.array</code> is <code>FALSE</code>. The <code>I()</code> function has no effect for other R object structures.</p>
+<p>If <code>length.one.vector.as.array = FALSE</code> (the default), length-one vectors are considered scalar values. If <code>scalars.as.objects</code> is also <code>FALSE</code> (the default), <code>convertToJava()</code> will return the original R vector instead of creating a Java object for <code>numeric</code>, <code>integer</code>, <code>logical</code>, and <code>character</code> length-one vectors. rJava requires these structures to indicate Java <code>double</code>, <code>int</code>, <code>boolean</code>, and <code>String</code> method parameters, respectively. If the R vector type is <code>raw</code>, <code>convertToJava()</code> returns an object of class <code>jbyte</code> to notify rJava that the value should be converted to a Java <code>byte</code> scalar. (See the documentation for <code>rJava::.jbyte()</code>.)</p>
+<p>If <code>length.one.vector.as.array = FALSE</code> and <code>scalars.as.objects = TRUE</code>, length-one vectors will be converted to so-called <em>boxed</em> scalars. That is, <code>numeric</code>, <code>integer</code>, <code>logical</code>, <code>raw</code>, and <code>character</code> vectors of length one are converted to <code>java.lang.Double</code>, <code>java.lang.Integer</code>, <code>java.lang.Boolean</code>, <code>java.lang.Byte</code>, and <code>java.lang.String</code> objects, respectively.</p>
+<p>The following two tables detail the behavior of <code>convertToJava()</code> for length-one vectors when <code>length.one.vector.as.array = FALSE</code>.</p>
+<table>
+<caption><code>convertToJava()</code> behavior for length-one vectors when <code>length.one.vector.as.array = FALSE</code> and <code>scalars.as.objects = FALSE</code></caption>
+<colgroup>
+<col width="23%"></col>
+<col width="16%"></col>
+<col width="21%"></col>
+<col width="38%"></col>
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>R Structure</strong></td>
+<td align="left"><strong>Return Value</strong></td>
+<td align="left"><strong>NA Behavior</strong></td>
+<td align="left"><strong>Comments</strong></td>
+</tr>
+<tr class="even">
+<td align="left"><code>numeric</code></td>
+<td align="left">R <code>numeric</code> vector</td>
+<td align="left"><code>NA_real_</code> is returned</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>integer</code></td>
+<td align="left">R <code>integer</code> vector</td>
+<td align="left"><code>NA_integer_</code> is returned</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><code>character</code></td>
+<td align="left">R <code>character</code> vector</td>
+<td align="left"><code>NA_character_</code> is returned</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>logical</code></td>
+<td align="left">R <code>logical</code> vector</td>
+<td align="left"><code>NA</code> maps to <code>FALSE</code></td>
+<td align="left"><code>NA</code> values are converted to <code>FALSE</code> with a warning.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>raw</code></td>
+<td align="left">rJava <code>jbyte</code> class</td>
+<td align="left">–</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>complex</code></td>
+<td align="left">–</td>
+<td align="left">–</td>
+<td align="left">Unsupported. Convert to <code>character</code>.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Date</code></td>
+<td align="left">–</td>
+<td align="left">–</td>
+<td align="left">Unsupported. Convert to <code>character</code>.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>POSIXlt</code>, <code>POSIXct</code>, <code>POSIXt</code></td>
+<td align="left">–</td>
+<td align="left">–</td>
+<td align="left">Unsupported. Convert to <code>character</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<table>
+<caption><code>convertToJava()</code> behavior for length-one vectors when <code>length.one.vector.as.array = FALSE</code> and <code>scalars.as.objects = TRUE</code></caption>
+<colgroup>
+<col width="18%"></col>
+<col width="12%"></col>
+<col width="23%"></col>
+<col width="45%"></col>
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>R Structure</strong></td>
+<td align="left"><strong>Return Value</strong></td>
+<td align="left"><strong>NA Behavior</strong></td>
+<td align="left"><strong>Comments</strong></td>
+</tr>
+<tr class="even">
+<td align="left"><code>numeric</code></td>
+<td align="left"><code>java.lang.Double</code></td>
+<td align="left"><code>NA_real_</code> maps to a reserved value</td>
+<td align="left">The reserved value for <code>NA_real_</code> is not the same as <code>NaN</code> in Java, but <code>Double.isNaN()</code> will still return <code>true</code>.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>integer</code></td>
+<td align="left"><code>java.lang.Integer</code></td>
+<td align="left"><code>NA_integer_ maps</code> to a reserved value</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><code>character</code></td>
+<td align="left"><code>java.lang.String</code></td>
+<td align="left"><code>NA_character_</code> maps to Java <code>null</code></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>logical</code></td>
+<td align="left"><code>java.lang.Boolean</code></td>
+<td align="left"><code>NA</code> maps to Java <code>false</code></td>
+<td align="left"><code>NA</code> values are converted to Java <code>false</code> with a warning.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>raw</code></td>
+<td align="left"><code>java.lang.Byte</code></td>
+<td align="left">–</td>
+<td align="left">R <code>raw</code> values and Java <code>byte</code> values are both 8 bits, but they are interpreted differently. R <code>raw</code> values range from 0 to 255 (i.e., unsigned bytes). Java <code>byte</code> values range from -128 to 127 (i.e., signed bytes). The 8-bit value 0xff represents 255 in R, but is -1 in Java.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>complex</code></td>
+<td align="left">–</td>
+<td align="left">–</td>
+<td align="left">Unsupported. Convert to <code>character</code>.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Date</code></td>
+<td align="left">–</td>
+<td align="left">–</td>
+<td align="left">Unsupported. Convert to <code>character</code>.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>POSIXlt</code>, <code>POSIXct</code>, <code>POSIXt</code></td>
+<td align="left">–</td>
+<td align="left">–</td>
+<td align="left">Unsupported. Convert to <code>character</code>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="r-vectors-one-dimensional-arrays-and-one-dimensional-tables" class="section level3">
+<h3>R Vectors, One-dimensional Arrays, and One-dimensional Tables</h3>
+<p>The <code>convertToJava()</code> functionality for vectors, one-dimensional arrays, and one-dimensional tables is summarized in the table below. In this case, <code>convertToJava()</code> is the same as <code>rJava::.jarray()</code> with one exception: <code>convertToJava()</code> raises a warning when the <code>logical</code> value <code>NA</code> is replaced with <code>FALSE</code>.</p>
+<table>
+<caption><code>convertToJava()</code> behavior for vectors, one-dimensional arrays, and one-dimensional tables</caption>
+<colgroup>
+<col width="18%"></col>
+<col width="12%"></col>
+<col width="23%"></col>
+<col width="45%"></col>
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>R Structure</strong></td>
+<td align="left"><strong>Return Value</strong></td>
+<td align="left"><strong>NA Behavior</strong></td>
+<td align="left"><strong>Comments</strong></td>
+</tr>
+<tr class="even">
+<td align="left"><code>numeric</code></td>
+<td align="left"><code>double[]</code></td>
+<td align="left"><code>NA_real_</code> maps to a reserved value</td>
+<td align="left">The reserved value for <code>NA_real_</code> is not the same as <code>NaN</code> in Java, but <code>Double.isNaN()</code> will still return <code>true</code>.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>integer</code></td>
+<td align="left"><code>int[]</code></td>
+<td align="left"><code>NA_integer_ maps</code> to a reserved value</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><code>character</code></td>
+<td align="left"><code>java.lang.String[]</code></td>
+<td align="left"><code>NA_character_</code> maps to Java <code>null</code></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>logical</code></td>
+<td align="left"><code>boolean[]</code></td>
+<td align="left"><code>NA</code> maps to Java <code>false</code></td>
+<td align="left"><code>NA</code> values are converted to Java <code>false</code> with a warning.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>raw</code></td>
+<td align="left"><code>byte[]</code></td>
+<td align="left">–</td>
+<td align="left">R <code>raw</code> values and Java <code>byte</code> values are both 8 bits, but they are interpreted differently. R <code>raw</code> values range from 0 to 255 (i.e., unsigned bytes). Java <code>byte</code> values range from -128 to 127 (i.e., signed bytes). The 8-bit value 0xff represents 255 in R, but is -1 in Java.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>complex</code></td>
+<td align="left">–</td>
+<td align="left">–</td>
+<td align="left">Unsupported. Convert to <code>character</code>.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Date</code></td>
+<td align="left">–</td>
+<td align="left">–</td>
+<td align="left">Unsupported. Convert to <code>character</code>.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>POSIXlt</code>, <code>POSIXct</code>, <code>POSIXt</code></td>
+<td align="left">–</td>
+<td align="left">–</td>
+<td align="left">Unsupported. Convert to <code>character</code>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="r_factors" class="section level3">
+<h3>R Factors</h3>
+<p>R factors are comprised of a <code>character</code> vector of levels and an <code>integer</code> vector of indexes that reference the levels. For example, if the <code>integer</code> vector <code>5:7</code> is converted to a factor, the levels will be <code>c(&quot;5&quot;, &quot;6&quot;, &quot;7&quot;)</code> and the indexes will be <code>c(1L, 2L, 3L)</code>. The <code>coerce.factors</code> parameter for <code>convertToJava()</code> determines how the factor levels are handled when converting the factor to a vector before it’s converted to a Java array. If <code>coerce.factors = TRUE</code> (the default), an attempt is made to coerce the factor levels to <code>integer</code>, <code>numeric</code>, or <code>logical</code> values. If coercion fails, the <code>character</code> levels are used. If <code>coerce.factors = FALSE</code>, the <code>character</code> levels are always used. Once the factor is converted to a vector, the conversion to Java follows the same mapping behavior as vectors.</p>
+<p><code>NA</code> values present in factors are preserved. The <code>character</code> literal <code>&quot;NA&quot;</code> is <em>not</em> coerced to the constant <code>NA</code>.</p>
+</div>
+<div id="r_n_dimensional_arrays" class="section level3">
+<h3>R Matrices and N-dimensional Arrays</h3>
+<p>The jdx package supports data exchange for matrices and other n-dimensional arrays. Three ordering schemes are available via the <code>convertToJava()</code> parameter <code>array.order</code>: <code>'row-major'</code>, <code>'column-major'</code>, and <code>'column-minor'</code>. These parameters control how the destination Java array is constructed.</p>
+<p>Before describing the ordering schemes, it is helpful to think of n-dimensional arrays as collections of smaller structures. A one-dimensional array (a vector) is a collection of scalars. A two-dimensional array (a matrix) is a collection of one-dimensional arrays representing either rows or columns of the matrix. A three-dimensional array (a rectangular prism or cube) is a collection of matrices. A four-dimensional array is a collection of cubes, and so forth.</p>
+<!-- Java n-dimensional arrays are literally constructed in this fashion (see [Iliffe vectors](https://en.wikipedia.org/wiki/Iliffe_vector) for more information). -->
+<!-- In contrast, R n-dimensional arrays, are stored in memory as a one-dimensional array and the data are retrieved in the appropriate order using indexing arithmetic. -->
+<!-- Note that these settings control index ordering, not necessarily *array storage order*. We highlight this difference because the terms *row-major*, *column-major*, and *column-minor* can be used to describe both array storage order in memory and array indexing order in syntax. For example, R n-dimensional arrays use column-major storage order: the elements in each column are stored consecutively in memory, and the elememts of one column have lower memory addresses than the elements of the next column. The R language syntax, on the other hand, uses row-major indexing. For the matrix `a`, the expression `a[1, 2]` returns the element in the first row and second column. That is, the row is represented by the first (i.e., major) index. Hence, the storage order does not follow the indexing scheme in R. -->
+<p>Now we describe the each of the <code>array.order</code> options.</p>
+<ul>
+<li><p><code>'row-major'</code> – The data of the resulting Java n-dimensional array are ordered <code>[row][column][matrix]...[n]</code>. The jdx package defaults to <code>'row-major'</code> because R syntax uses this indexing scheme (though R stores the array in memory using column-major order). This row-major scheme is not intuitive for Java programmers when n &gt; 2 because Java n-dimensional arrays are constructed as high-order objects containing low-order objects.</p></li>
+<li><p><code>'column-major'</code> – The data of the resulting Java n-dimensional array are ordered <code>[n]...[matrix][column][row]</code>. This ordering scheme is natural for Java programmers: the data contained in the one-dimensional arrays represent columns of the parent matrix.</p></li>
+<li><p><code>'column-minor'</code> – The data of the resulting Java n-dimensional array are ordered <code>[n]...[matrix][row][column]</code>. This provides Java programmers with a natural ordering scheme where the arrays at the one-dimensional level represent rows of the parent matrix. For matrices, <code>'column-minor'</code> and <code>'row-major'</code> are equivalent.</p></li>
+</ul>
+<p><strong>NOTE:</strong> If an R array is converted to Java using a particular array order, use the same array order when converting it back from Java to R. Otherwise, the data will be in the wrong order.</p>
+<p>R supports empty multidimensional structures that cannot always be reproduced exactly in Java. Consider an R matrix with one row and zero columns: <code>m &lt;- array(0, c(1, 0))</code>. If this matrix is converted to Java using row-major order, the resulting array is <code>{{}}</code>: a structure with one empty row. The <code>convertToR()</code> function can convert this array back to the same R matrix exactly. However, if the matrix is converted using column-major order the resulting array is <code>{}</code> because there are zero column structures. The <code>convertToR()</code> function will convert this array back to an R matrix of <code>array(0, c(0, 0))</code>.</p>
+<p>The following table shows how <code>convertToJava()</code> maps n-dimensional R structures to Java structures.</p>
+<table>
+<caption><code>convertToJava()</code> behavior for n-dimensional arrays and tables</caption>
+<colgroup>
+<col width="18%"></col>
+<col width="15%"></col>
+<col width="22%"></col>
+<col width="44%"></col>
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>R Structure</strong></td>
+<td align="left"><strong>Return Value</strong></td>
+<td align="left"><strong>NA Behavior</strong></td>
+<td align="left"><strong>Comments</strong></td>
+</tr>
+<tr class="even">
+<td align="left"><code>numeric</code></td>
+<td align="left"><code>double[]...[]</code></td>
+<td align="left"><code>NA_real_</code> maps to a reserved value</td>
+<td align="left">The reserved value for <code>NA_real_</code> is not the same as <code>NaN</code> in Java, but <code>Double.isNaN()</code> will still return <code>true</code>.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>integer</code></td>
+<td align="left"><code>int[]...[]</code></td>
+<td align="left"><code>NA_integer_ maps</code> to a reserved value</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><code>character</code></td>
+<td align="left"><code>java.lang.String[]...[]</code></td>
+<td align="left"><code>NA_character_</code> maps to Java <code>null</code></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>logical</code></td>
+<td align="left"><code>boolean[]...[]</code></td>
+<td align="left"><code>NA</code> maps to Java <code>false</code></td>
+<td align="left"><code>NA</code> values are converted to Java <code>false</code> with a warning.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>raw</code></td>
+<td align="left"><code>byte[]...[]</code></td>
+<td align="left">–</td>
+<td align="left">R <code>raw</code> values and Java <code>byte</code> values are both 8 bits, but they are interpreted differently. R <code>raw</code> values range from 0 to 255 (i.e., unsigned bytes). Java <code>byte</code> values range from -128 to 127 (i.e., signed bytes). The 8-bit value 0xff represents 255 in R, but is -1 in Java.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>complex</code></td>
+<td align="left">–</td>
+<td align="left">–</td>
+<td align="left">Unsupported. Convert to <code>character</code>.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Date</code></td>
+<td align="left">–</td>
+<td align="left">–</td>
+<td align="left">Unsupported. Convert to <code>character</code>.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>POSIXlt</code>, <code>POSIXct</code>, <code>POSIXt</code></td>
+<td align="left">–</td>
+<td align="left">–</td>
+<td align="left">Unsupported. Convert to <code>character</code>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="r_data_frames" class="section level3">
+<h3>R Data Frames</h3>
+<p>The <code>data.frame.row.major</code> parameter of the <code>convertToJava()</code> function specifies whether data frames are converted using row-major or column-major form. When <code>data.frame.row.major = TRUE</code> (the default), the result is an <code>ArrayList&lt;LinkedHashMap&lt;String, Object&gt;&gt;</code> object where each map object represents a row in the data frame. The key/value pairs in each map are the names and scalar values associated with each field in the row. The row values follow the same conversion rules as vectors of length one when <code>length.one.vector.as.array = FALSE</code> and <code>scalars.as.objects = TRUE</code>.</p>
+<p>When <code>data.frame.row.major = FALSE</code>, <code>convertToJava()</code> creates a <code>LinkedHashMap&lt;String, Object&gt;</code> object. In this case, the key/value pairs represent column names and data. The column data are converted to primitive Java arrays using the same rules as R vectors.</p>
+<p><strong>NOTE:</strong> The jdx package uses row-major ordering by default because of its popularity. However, column-major structures are much faster to create and they often present a performance advantage for calculations.</p>
+<p>Row names for data frames are not preserved during conversion. To include row names in the conversion, simply add them as a column in your data frame. We do not automatically include row names in conversion because it would require us to create an additional element in the Java map with a reserved key value such as <code>_row</code>. Instead, we leave the decision of how to handle row names to the developer.</p>
+</div>
+<div id="r-lists-and-environments" class="section level3">
+<h3>R Lists and Environments</h3>
+<p>The jdx package supports data exchange for lists, named lists, nested lists (i.e., lists containing other lists), and environments. Lists can contain any jdx-supported R object. The <code>convertToJava()</code> function converts R lists to Java <code>ArrayList&lt;Object&gt;</code> objects. It converts named lists and <code>environment</code> objects to Java <code>LinkedHashMap&lt;String, Object&gt;</code> objects. The <code>ArrayList</code> and <code>LinkedHashMap</code> objects implement the Java <code>Collection</code> and <code>Map</code> interfaces, respectively. These interfaces are ubiquitous in the Java API.</p>
+<p><strong>NOTE:</strong> If <code>lst</code> is an R list, <code>convertToR(convertToJava(lst))</code> may not result in a list in some cases. See <a href="#conversion_issues">Conversion Issues</a> for details.</p>
+</div>
+</div>
+<div id="converting-java-objects-to-r-objects" class="section level2">
+<h2>Converting Java Objects to R Objects</h2>
+<p>The jdx function <code>javaToR()</code> is used to convert generic Java objects to R objects. Java scalars, arrays, maps, and collections are supported. Providing data exchange for maps and collections extends application integration capabilities considerably because a large number of Java classes expose these interfaces. For example, virtually every list, set, and queue object in the standard Java API implements the <code>Collection</code> interface.</p>
+<p><strong>NOTE:</strong> Java collections and maps are converted to a variety of R objects depending on content. See the related sections below for conversion rules.</p>
+<p>All of the primitive Java data types and their object (i.e. boxed) counterparts are supported (e.g. <code>int</code> and <code>java.lang.Integer</code>). In addition, jdx supports <code>java.lang.String</code>, <code>java.math.BigDecimal</code>, and <code>java.math.BigInteger</code>.</p>
+<p>The <code>convertToR()</code> function provides two data conversion parameters:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">convertToR</span>(
+  value,
+  <span class="dt">strings.as.factors =</span> <span class="ot">NULL</span>,
+  <span class="dt">array.order =</span> <span class="st">&quot;row-major&quot;</span>
+)</code></pre></div>
+<p>The parameter <code>strings.as.factors</code> determines whether string arrays are converted to factors in data frames. See <a href="#java_maps">Java Maps</a> for more information about the three possible options. The <code>array.order</code> parameter behaves the same way as in the <code>convertToJava()</code> function. See <a href="#r_n_dimensional_arrays">R Matrices and N-dimensional Arrays</a> for a description of the <code>array.order</code> options.</p>
+<div id="java-scalars" class="section level3">
+<h3>Java Scalars</h3>
+<p>The <code>convertToR()</code> function converts Java scalars to length-one R vectors. Scalars of <code>java.math.BigDecimal</code> and <code>java.math.BigInteger</code> have arbitrary precision. When values of these types overflow R’s <code>numeric</code> precision, <code>Inf</code> (infinity) is returned.</p>
+<table>
+<caption><code>convertToR()</code> behavior for Java scalars</caption>
+<colgroup>
+<col width="25%"></col>
+<col width="21%"></col>
+<col width="25%"></col>
+<col width="28%"></col>
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Java Structure</strong></td>
+<td align="left"><strong>Return Value</strong></td>
+<td align="left"><strong>Java null Behavior</strong></td>
+<td align="left"><strong>Comments</strong></td>
+</tr>
+<tr class="even">
+<td align="left"><code>boolean</code>, <code>Boolean</code></td>
+<td align="left"><code>logical</code> vector</td>
+<td align="left"><code>NULL</code></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>byte</code>, <code>Byte</code></td>
+<td align="left"><code>raw</code> vector</td>
+<td align="left"><code>NULL</code></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><code>char</code>, <code>Character</code></td>
+<td align="left"><code>character</code> vector</td>
+<td align="left"><code>NULL</code></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>double</code>, <code>Double</code></td>
+<td align="left"><code>numeric</code> vector</td>
+<td align="left"><code>NULL</code></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><code>float</code>, <code>Float</code></td>
+<td align="left"><code>numeric</code> vector</td>
+<td align="left"><code>NULL</code></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>int</code>, <code>Integer</code></td>
+<td align="left"><code>integer</code> vector</td>
+<td align="left"><code>NULL</code></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><code>java.math.BigDecimal</code></td>
+<td align="left"><code>numeric</code> vector</td>
+<td align="left"><code>NULL</code></td>
+<td align="left">Overflows result in <code>Inf</code>.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>java.math.BigInteger</code></td>
+<td align="left"><code>numeric</code> vector</td>
+<td align="left"><code>NULL</code></td>
+<td align="left">Overflows result in <code>Inf</code>.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>long</code>, <code>Long</code></td>
+<td align="left"><code>numeric</code> vector</td>
+<td align="left"><code>NULL</code></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>short</code>, <code>Short</code></td>
+<td align="left"><code>integer</code> vector</td>
+<td align="left"><code>NULL</code></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><code>java.lang.String</code></td>
+<td align="left"><code>character</code> vector</td>
+<td align="left"><code>NULL</code></td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="java_arrays" class="section level3">
+<h3>Java One-dimensional Arrays and N-dimensional Rectangular Arrays</h3>
+<p>The <code>convertToR()</code> function converts one-dimensional Java arrays to R vectors and it converts n-dimensional rectangular Java arrays to n-dimensional R arrays. The <code>array.order</code> parameter controls how the data are ordered when copying from Java to R. The possible <code>array.order</code> parameters are described as follows. (For a more detailed discussion, see <a href="#r_n_dimensional_arrays">R Matrices and N-dimensional Arrays</a>.)</p>
+<ul>
+<li><p><code>'row-major'</code> – The data in the Java n-dimensional array are assumed to be in <code>[row][column][matrix]...[n]</code> order.</p></li>
+<li><p><code>'column-major'</code> – The data in the Java n-dimensional array are assumed to be in <code>[n]...[matrix][column][row]</code> order.</p></li>
+<li><p><code>'column-minor'</code> – The data in the source Java n-dimensional array are assumed to be in <code>[n]...[matrix][row][column]</code> order. For matrices, <code>'column-minor'</code> and <code>'row-major'</code> are equivalent.</p></li>
+</ul>
+<p><strong>NOTE:</strong> If an R array is converted to Java using a particular array order, use the same array order when converting it back from Java to R. Otherwise, the data will be in the wrong order.</p>
+<p>R supports empty multidimensional structures that cannot always be reproduced exactly in Java. Consider an R matrix with one row and zero columns: <code>m &lt;- array(0, c(1, 0))</code>. If this matrix is converted to Java using row-major order, the resulting array is <code>{{}}</code>: a structure with one empty row. The <code>convertToR()</code> function can convert this array back to the same R matrix exactly. However, if the matrix is converted using column-major order the resulting array is <code>{}</code> because there are zero column structures. The <code>convertToR()</code> function will convert this array back to an R matrix of <code>array(0, c(0, 0))</code>.</p>
+<p>If an object array contains <code>null</code>, it is replaced by the appropriate R <code>NA</code> value or a constant. See the following table for details.</p>
+<table>
+<caption><code>convertToR()</code> behavior for one-dimensional Java arrays and n-dimensional Java arrays</caption>
+<colgroup>
+<col width="25%"></col>
+<col width="21%"></col>
+<col width="18%"></col>
+<col width="34%"></col>
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Java Structure</strong></td>
+<td align="left"><strong>Return Value</strong></td>
+<td align="left"><strong>Java null Behavior</strong></td>
+<td align="left"><strong>Comments</strong></td>
+</tr>
+<tr class="even">
+<td align="left"><code>boolean[]..[]</code>, <code>Boolean[]..[]</code></td>
+<td align="left"><code>logical</code> vector or array</td>
+<td align="left"><code>FALSE</code></td>
+<td align="left">Java <code>null</code> maps to <code>FALSE</code> with warning.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>byte[]..[]</code>, <code>Byte[]..[]</code></td>
+<td align="left"><code>raw</code> vector or array</td>
+<td align="left"><code>raw</code> <code>0x00</code></td>
+<td align="left">Java <code>null</code> maps to <code>raw</code> <code>0x00</code> with warning.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>char[]..[]</code>, <code>Character</code>[]..[]</td>
+<td align="left"><code>character</code> vector or array</td>
+<td align="left"><code>NA_character_</code></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>double[]..[]</code>, <code>Double[]..[]</code></td>
+<td align="left"><code>numeric</code> vector or array</td>
+<td align="left"><code>NA_real_</code></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><code>float[]..[]</code>, <code>Float[]..[]</code></td>
+<td align="left"><code>numeric</code> vector or array</td>
+<td align="left"><code>NA_real_</code></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>int[]..[]</code>, <code>Integer[]..[]</code></td>
+<td align="left"><code>integer</code> vector or array</td>
+<td align="left"><code>NA_integer_</code></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><code>java.math.BigDecimal[]..[]</code></td>
+<td align="left"><code>numeric</code> vector or array</td>
+<td align="left"><code>NA_real_</code></td>
+<td align="left">Overflows result in <code>Inf</code>.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>java.math.BigInteger[]..[]</code></td>
+<td align="left"><code>numeric</code> vector or array</td>
+<td align="left"><code>NA_real_</code></td>
+<td align="left">Overflows result in <code>Inf</code>.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>long[]..[]</code>, <code>Long[]..[]</code></td>
+<td align="left"><code>numeric</code> vector or array</td>
+<td align="left"><code>NA_real_</code></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>Object[]..[]</code></td>
+<td align="left">handled as a collection</td>
+<td align="left"><code>NULL</code></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><code>short[]..[]</code>, <code>Short[]..[]</code></td>
+<td align="left"><code>integer</code> vector or array</td>
+<td align="left"><code>NA_integer_</code></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>java.lang.String[]..[]</code></td>
+<td align="left"><code>character</code> vector or array</td>
+<td align="left"><code>NA_character_</code></td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="java-ragged-arrays" class="section level3">
+<h3>Java Ragged Arrays</h3>
+<p>Java n-dimensional arrays whose subarrays of a given dimension are not the same dimension are known as <em>ragged arrays</em>. Ragged arrays cannot be converted to R arrays. The <code>convertToR()</code> function translates ragged arrays to lists of the appropriate object. For example, a matrix containing subarrays of different lengths will be converted to an R list of vectors. Likewise, a three-dimensional array containing two matrices of different dimensions will be converted to an R list of matrices.</p>
+</div>
+<div id="java_maps" class="section level3">
+<h3>Java Maps</h3>
+<p>The <code>convertToR()</code> function attempts to convert Java objects implementing the <code>Map</code> interface to named lists or data frames. The map keys must be string values. If the map contains multiple same-length arrays, or same-length collections that can be converted to arrays, the map will be converted to a data frame. Otherwise, the object will be converted to a named list.</p>
+<p>The <code>strings.as.factors</code> parameter of the <code>convertToR()</code> function controls whether string arrays are automatically converted to factors when creating a data frame. If <code>strings.as.factors = NULL</code> (the default), the R system setting is used (see <code>base::getOption(&quot;stringsAsFactors&quot;)</code>). When <code>strings.as.factors = TRUE</code>, string arrays will be converted to factors. Finally, if <code>strings.as.factors = FALSE</code>, the string arrays are converted to <code>character</code> vectors.</p>
+</div>
+<div id="java_collections" class="section level3">
+<h3>Java Collections</h3>
+<p>Java objects implementing the <code>Collection</code> interface can be converted to vectors, n-dimensional arrays, data frames, and unnamed lists. Conversions rules are delineated in the table below. Many of these rules arise from the fact that JavaScript arrays are implemented as collections. Hence, jdx attempts to make collections behave as arrays wherever possible. (Remember, jdx was developed primarily for jsr223, a high-level scripting interface for Java and R.) This is also natural for Java programmers accustomed to switching between array-based and collection-based APIs.</p>
+<p>The <code>convertToR()</code> parameters <code>array.order</code> and <code>strings.as.factors</code> behave the same way for objects converted from collections as they do elsewhere. See <a href="#r_n_dimensional_arrays">R Matrices and N-dimensional Arrays</a> for a description of the <code>array.order</code> parameter. Refer to <a href="#java_maps">Java Maps</a> for details relating to <code>strings.as.factors</code>.</p>
+<table>
+<caption><code>convertToR()</code> behavior for Java objects implementing the <code>java.util.Collection</code> interface</caption>
+<colgroup>
+<col width="24%"></col>
+<col width="15%"></col>
+<col width="14%"></col>
+<col width="45%"></col>
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>Java Structure</strong></td>
+<td align="left"><strong>Return Value</strong></td>
+<td align="left"><strong>Java null Behavior</strong></td>
+<td align="left"><strong>Comments</strong></td>
+</tr>
+<tr class="even">
+<td align="left">Containing only <code>null</code></td>
+<td align="left">unnamed list</td>
+<td align="left"><code>NULL</code></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Containing scalars of <code>Byte</code>/<code>null</code></td>
+<td align="left"><code>raw</code> vector</td>
+<td align="left"><code>raw</code> <code>0x00</code></td>
+<td align="left">Java <code>null</code> maps to <code>0x00</code> with warning.</td>
+</tr>
+<tr class="even">
+<td align="left">Containing scalars of <code>Integer</code>/<code>Short</code>/<code>Byte</code>/<code>null</code></td>
+<td align="left"><code>integer</code> vector</td>
+<td align="left"><code>NA_integer_</code></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Containing a scalar mixture of any other <code>java.lang.Number</code> subclasses and <code>null</code></td>
+<td align="left"><code>numeric</code> vector</td>
+<td align="left"><code>NA_real_</code></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Containing scalars of <code>Character</code>/<code>String</code>/<code>null</code></td>
+<td align="left"><code>character</code> vector</td>
+<td align="left"><code>NA_character_</code></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Containing scalars of <code>Boolean</code>/<code>null</code></td>
+<td align="left"><code>logical</code> vector</td>
+<td align="left"><code>FALSE</code></td>
+<td align="left">Java <code>null</code> maps to <code>FALSE</code> with warning.</td>
+</tr>
+<tr class="even">
+<td align="left">Containing arrays/collections of the same n dimensions</td>
+<td align="left">(n + 1)-dimensional array</td>
+<td align="left">Same as vector mappings</td>
+<td align="left">A mixture of Java numeric data types will be converted to the most general data type.</td>
+</tr>
+<tr class="odd">
+<td align="left">Containing maps representing rows</td>
+<td align="left">data frame</td>
+<td align="left">–</td>
+<td align="left">See documentation for <code>setStringsAsFactors</code>. Mixtures of numeric types in the same column will be coerced to the most general type.</td>
+</tr>
+<tr class="even">
+<td align="left">All other contents</td>
+<td align="left">unnamed list</td>
+<td align="left">–</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="conversion_issues" class="section level2">
+<h2>Conversion Issues</h2>
+<p>The jdx data exchange functions use standard R and Java objects instead of custom classes for maximum compatibility. In some cases, it is not possible to know for certain what the intended target data structure should be. For example, should a collection of Java arrays be converted to an R list of vectors or a matrix? This section highlights conversion rules related to ambigous data structures. Developers who discover that <code>convertToJava()</code> and <code>convertToR()</code> are not always perfect inverses of each other will find the information here particularly useful.</p>
+<div id="unnamed-r-lists" class="section level3">
+<h3>Unnamed R Lists</h3>
+<p>If <code>lst</code> is an R list, <code>convertToR(convertToJava(lst))</code> may not result in a list. If <code>lst</code> is an unnamed list, <code>convertToJava(lst)</code> creates an object whose class implements <code>java.util.Collection</code>. However, <code>convertToR()</code> does not always create an unnamed list when it encounters a Java collection. There are several reasons for this, some of which are mentioned in <a href="#java_collections">Java Collections</a>. We consider several cases below where an R list may be converted to Java, and then back to R, with unexpected results.</p>
+<p><strong>NOTE:</strong> Many of the common conversion issues related to unnamed lists can be avoided by using named lists.</p>
+<p>A list of scalars (i.e., length-one vectors) converted to Java will be converted back to R as a vector if the data types are considered compatible. See the conversion table in <a href="#java_collections">Java Collections</a> for data types that are considered compatible. In the following example, a list containing numeric, integer, and raw values, are converted to a Java collection containing <code>double</code>, <code>int</code>, and <code>byte</code> values, respectively. The Java collection is converted back to R as a numeric vector because these number types are considered compatible.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lst &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="fl">1.1</span>, 2L, <span class="kw">as.raw</span>(<span class="dv">3</span>))
+(o &lt;-<span class="st"> </span><span class="kw">convertToJava</span>(lst))</code></pre></div>
+<pre><code>## [1] &quot;Java-Object{[1.1, 2, 3]}&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(r &lt;-<span class="st"> </span><span class="kw">convertToR</span>(o))</code></pre></div>
+<pre><code>## [1] 1.1 2.0 3.0</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(r)</code></pre></div>
+<pre><code>## [1] &quot;numeric&quot;</code></pre>
+<p>In contrast, the list in the next example will be converted back to R as a list because the types are not considered compatible.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lst &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="fl">1.1</span>, <span class="st">&quot;a&quot;</span>)
+(o &lt;-<span class="st"> </span><span class="kw">convertToJava</span>(lst))</code></pre></div>
+<pre><code>## [1] &quot;Java-Object{[1.1, a]}&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(r &lt;-<span class="st"> </span><span class="kw">convertToR</span>(o))</code></pre></div>
+<pre><code>## [[1]]
+## [1] 1.1
+## 
+## [[2]]
+## [1] &quot;a&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(r)</code></pre></div>
+<pre><code>## [1] &quot;list&quot;</code></pre>
+<p>A list of compatible n-dimensional arrays will be converted back to R as an (n + 1)-dimensional array. (Note that vectors and factors are considered 1-dimensional arrays.) As with scalars, structures of mixed number types will assume the most generic number data type. This code returns a numeric matrix:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lst &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="kw">c</span>(3L, 4L))
+(o &lt;-<span class="st"> </span><span class="kw">convertToJava</span>(lst, <span class="dt">array.order =</span> <span class="st">&quot;column-major&quot;</span>))</code></pre></div>
+<pre><code>## [1] &quot;Java-Object{[[D@6e0be858, [I@61bbe9ba]}&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(r &lt;-<span class="st"> </span><span class="kw">convertToR</span>(o, <span class="dt">array.order =</span> <span class="st">&quot;column-major&quot;</span>))</code></pre></div>
+<pre><code>##      [,1] [,2]
+## [1,]    1    3
+## [2,]    2    4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(r)</code></pre></div>
+<pre><code>## [1] &quot;matrix&quot;</code></pre>
+<p>Similarly, this next example results in numeric 3-dimensional array.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># This example results in a three-dimensional array.</span>
+lst &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">matrix</span>(<span class="dv">1</span>:<span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">2</span>), <span class="kw">matrix</span>(<span class="dv">5</span>:<span class="dv">8</span>, <span class="dv">2</span>, <span class="dv">2</span>))
+(o &lt;-<span class="st"> </span><span class="kw">convertToJava</span>(lst, <span class="dt">array.order =</span> <span class="st">&quot;column-major&quot;</span>))</code></pre></div>
+<pre><code>## [1] &quot;Java-Object{[[[I@610455d6, [[I@511d50c0]}&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">convertToR</span>(o, <span class="dt">array.order =</span> <span class="st">&quot;column-major&quot;</span>)</code></pre></div>
+<pre><code>## , , 1
+## 
+##      [,1] [,2]
+## [1,]    1    3
+## [2,]    2    4
+## 
+## , , 2
+## 
+##      [,1] [,2]
+## [1,]    5    7
+## [2,]    6    8</code></pre>
+<p>Perhaps the most unexpected result is when a single-member list is converted back to R as a vector or array. In this case, a nested list becomes a matrix:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lst &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">list</span>(<span class="dv">1</span>))
+<span class="kw">convertToR</span>(<span class="kw">convertToJava</span>(lst))</code></pre></div>
+<pre><code>##      [,1]
+## [1,]    1</code></pre>
+<p>Unnamed lists containing named lists of scalars will be converted to a data frame if the names are all the same and the data types are compatible.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lst &lt;-<span class="st"> </span><span class="kw">list</span>(
+  <span class="kw">list</span>(<span class="dt">field1 =</span> <span class="st">&quot;a&quot;</span>, <span class="dt">field2 =</span> <span class="dv">1</span>),
+  <span class="kw">list</span>(<span class="dt">field1 =</span> <span class="st">&quot;b&quot;</span>, <span class="dt">field2 =</span> <span class="dv">2</span>)
+)
+<span class="kw">convertToR</span>(<span class="kw">convertToJava</span>(lst))</code></pre></div>
+<pre><code>##   field1 field2
+## 1      a      1
+## 2      b      2</code></pre>
+<p>All of the conversion issues illustrated above can be avoided by using named lists in place of unnamed lists. For example, this list will remain a list.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lst &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">a =</span> <span class="fl">1.1</span>, <span class="dt">b =</span> 2L, <span class="dt">c =</span> <span class="kw">as.raw</span>(<span class="dv">3</span>))
+<span class="kw">convertToR</span>(<span class="kw">convertToJava</span>(lst))</code></pre></div>
+<pre><code>## $a
+## [1] 1.1
+## 
+## $b
+## [1] 2
+## 
+## $c
+## [1] 03</code></pre>
+</div>
+<div id="named-r-lists" class="section level3">
+<h3>Named R Lists</h3>
+<p>Named R lists have fewer ambiguity issues than unnamed lists. The only exception applies to data frames. A named list of same-length vectors is converted to a Java map of arrays. This structure will be converted back to R as a data frame if it contains two or more arrays. The following example illustrates this behavior.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lst &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">col1 =</span> <span class="dv">1</span>:<span class="dv">3</span>, <span class="dt">col2 =</span> letters[<span class="dv">1</span>:<span class="dv">3</span>])
+<span class="kw">convertToR</span>(<span class="kw">convertToJava</span>(lst))</code></pre></div>
+<pre><code>##   col1 col2
+## 1    1    a
+## 2    2    b
+## 3    3    c</code></pre>
+<p>A named list of length-one vectors is converted to a Java map of scalars by default. However, if <code>length.one.vector.as.array = TRUE</code>, the object is converted to a map of arrays. This results in a data frame when converted back to R.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lst &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">col1 =</span> <span class="dv">1</span>, <span class="dt">col2 =</span> <span class="st">&quot;a&quot;</span>)
+<span class="kw">convertToR</span>(<span class="kw">convertToJava</span>(lst))</code></pre></div>
+<pre><code>## $col1
+## [1] 1
+## 
+## $col2
+## [1] &quot;a&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lst &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">col1 =</span> <span class="dv">1</span>, <span class="dt">col2 =</span> <span class="st">&quot;a&quot;</span>)
+<span class="kw">convertToR</span>(<span class="kw">convertToJava</span>(lst, <span class="dt">length.one.vector.as.array =</span> <span class="ot">TRUE</span>))</code></pre></div>
+<pre><code>##   col1 col2
+## 1    1    a</code></pre>
+</div>
+<div id="r-data-frames" class="section level3">
+<h3>R Data Frames</h3>
+<p>Data frames are converted to Java maps of arrays when <code>data.frame.row.major = FALSE</code>. If there is only one column in the data frame, the Java object will be converted back to R as a named list containing a single vector. This behavior does not apply to data frames converted to Java using <code>data.frame.row.major = TRUE</code> (the default).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">col1 =</span> <span class="dv">1</span>:<span class="dv">3</span>)
+<span class="kw">convertToR</span>(<span class="kw">convertToJava</span>(df, <span class="dt">data.frame.row.major =</span> <span class="ot">FALSE</span>))</code></pre></div>
+<pre><code>## $col1
+## [1] 1 2 3</code></pre>
+</div>
+</div>
+<div id="R_raw_Java_byte" class="section level2">
+<h2>R raw Values and Java byte Values</h2>
+<p>The jdx package converts R <code>raw</code> values to Java <code>byte</code> values and vice versa. R <code>raw</code> values and Java <code>byte</code> values are both 8 bits, but they are interpreted differently. R raw values range from 0 to 255 (i.e., unsigned bytes). Java byte values range from -128 to 127 (i.e., signed bytes). The 8-bit value 0xff represents 255 in R, but is -1 in Java. Usually this discrepancy is not an issue because <code>raw</code> and <code>byte</code> values are used to store and transfer binary data such as images. If the human-readable values are important, use <code>integer</code> vectors and <code>int</code> Java arrays instead.</p>
+<p>The jdx package handles <code>raw</code> vectors and Java <code>byte</code> values differently than rJava in some cases. The differences are detailed below, but the general idea is that jdx is consistent in converting R <code>raw</code> values to Java <code>byte</code> values and vice versa for all data structures.</p>
+<p>The rJava package interprets length-one <code>raw</code> values as Java <code>byte</code> arrays by default. The <code>rJava::.jbyte()</code> function is required to indicate that a length-one <code>raw</code> vector should be treated as a <code>byte</code> scalar. In jdx, length-one <code>raw</code> vectors are marked as Java <code>byte</code> scalars by default. To override this behavior, use <code>convertToJava(value, length.one.vector.as.array = TRUE)</code> or <code>convertToJava(I(value))</code>.</p>
+<p>By default, rJava converts Java <code>byte</code> and <code>java.lang.Byte</code> scalars to length-one <code>integer</code> vectors. The jdx package converts these scalar types to length-one <code>raw</code> vectors.</p>
+<p>Finally, when the jdx package converts a <code>java.lang.Byte</code> array to a <code>raw</code> vector, it replaces <code>null</code> with <code>0x00</code> and raises a warning.</p>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
