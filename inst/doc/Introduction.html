@@ -108,7 +108,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="installation" class="section level2">
 <h2>Installation</h2>
 <p>The jdx package requires Java 8 Standard Edition or above. The current version of the Java Runtime Environment (JRE) can be determined by executing <code>java -version</code> from a system command prompt. Java 8 is denoted by version 1.8.x_xx. The JRE can be obtained from <a href="http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html">Oracle’s web site</a>. Select the architecture (32 or 64 bit) that matches your R installation.</p>
-<p>The jdx package runs on a standard installation of R (e.g., the R build option <code>--enable-R-shlib</code> is not required). Install jdx with the usual command: <code>install.packages(&quot;jdx&quot;)</code>.</p>
+<p>The jdx package runs on a standard installation of R (e.g., the R build option <code>--enable-R-shlib</code> is not required).</p>
+<p>Install jdx with the usual command: <code>install.packages(&quot;jdx&quot;)</code>. This command will automatically download and install rJava if necessary. If the rJava installation fails, make sure R is configured to use Java. For Linux/OSX, use <code>sudo R CMD javareconf</code>. For Windows, open a command prompt “As Administrator” and execute <code>R CMD javareconf</code>. If there are errors after executing the command, address them, then execute the Java configuration command again. One common error can be resolved by determining whether the GNU Compiler Collection (GCC) is accessible. To check for GCC, execute <code>gcc --help</code> from a terminal. This command will fail if GCC is not installed or if the license agreement has not been accepted.</p>
 </div>
 <div id="primary-functions" class="section level2">
 <h2>Primary Functions</h2>

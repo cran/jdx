@@ -1,4 +1,4 @@
-7769dd3a13c4a055f965e3572274b01f *DESCRIPTION
+2538b4d0c933fe76016d29c37022ec86 *DESCRIPTION
 eb331ba7fcf9e4cb2a4e064942763a1e *LICENSE
 a5dde486e576190933a389286f77fd2c *NAMESPACE
 389506ea057c88d19a7a4af7551e4ec4 *R/InitializePackage.R
@@ -6,8 +6,8 @@ a2a0e15d3695ea202ff5da405985d1df *R/Private.R
 e148ced3d1fe2e81b5340b54d056bec5 *R/Public.R
 2c2d5498e2b615b0948b7a8dc76c1bda *build/vignette.rds
 3310cbc8fa8fae9a869f75bcd720464c *inst/doc/Introduction.R
-99611209eb9ad2cf729e0cd59e7f4638 *inst/doc/Introduction.Rmd
-4cc9177f7b88104fddb8d197271e19a5 *inst/doc/Introduction.html
+b2fb2de0a0afe633c2471e02847a9ce9 *inst/doc/Introduction.Rmd
+845f2e9ae3201e705d95ec05b03b31f9 *inst/doc/Introduction.html
 de8a7322f4f858bd89cd6958f4c3d1e5 *inst/java/org.fgilbert.jdx-0.1.0.jar
 69b07eb22f43091d4739382dec769bee *java/org.fgilbert.jdx-sources-0.1.0.jar
 614467502ca5ee3e0566f5a45fe8e813 *man/LowLevelInterface.Rd
@@ -19,5 +19,5 @@ e735afebe94179929f554d576a85c271 *man/getJavaClassName.Rd
 0db3e81d0f9b80e11966ebce830caf5c *tests/testthat/test-00-internals.R
 05097f64aa51aea283d0c8928a847a51 *tests/testthat/test-01-low-level.R
 f2d0646d35295e7fcdb4aa4f0edfab40 *tests/testthat/test-02-data-exchange.R
-99611209eb9ad2cf729e0cd59e7f4638 *vignettes/Introduction.Rmd
+b2fb2de0a0afe633c2471e02847a9ce9 *vignettes/Introduction.Rmd
 af13b29c978d983948a09ce33056e9a7 *vignettes/introduction-tables.RData
